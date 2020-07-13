@@ -13,7 +13,7 @@ import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
-
+//VERSION1.2 with project-profit list
 public class
         Main {
 
