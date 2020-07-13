@@ -8,9 +8,20 @@ public class EmpProj {
     int projId;
     String empName;
     String projectDes;
+    int hoursWorked;
     LocalDate date;
     float projCost;
     float salary;
+    float profit;
+
+    public int getHoursWorked() {
+        return hoursWorked;
+    }
+
+    public void setHoursWorked(int hoursWorked) {
+        this.hoursWorked = hoursWorked;
+    }
+
 
     public int getEmpId() {
         return empId;
@@ -75,6 +86,7 @@ public class EmpProj {
                 ", projId=" + projId +
                 ", empName='" + empName + '\'' +
                 ", projectDes='" + projectDes + '\'' +
+                ", hoursWorked=" + hoursWorked +
                 ", date=" + date +
                 ", projCost=" + projCost +
                 ", salary=" + salary +
@@ -83,10 +95,25 @@ public class EmpProj {
 
     public String empDatePro() {
         return "EmpDateProj{" +
-            "empId="+empId +
-            ", projId="+projId +
-            ", empName='"+empName +'\''+
-            ", projectDes='"+projectDes +'\''+
-            ", date="+date +'}';
+                "empId=" + empId +
+                ", projId=" + projId +
+                ", empName='" + empName + '\'' +
+                ", projectDes='" + projectDes + '\'' +
+                ", date=" + date + '}';
+    }
+
+
+    public float getProfit() {
+        return profit;
+    }
+
+    public void setProfit(float profit) {
+        this.profit = profit;
+    }
+
+    public String projProfit() {
+        return " PROJECT & PROFIT" +
+                "                    " +
+                 '\'' + projectDes + "                    " + profit ;
     }
 }

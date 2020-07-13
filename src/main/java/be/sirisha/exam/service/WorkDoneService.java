@@ -2,10 +2,10 @@ package be.sirisha.exam.service;
 
 import be.sirisha.exam.data.WorkDoneDAO;
 import be.sirisha.exam.model.EmpProj;
+import be.sirisha.exam.model.Project;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Objects;
 
 public class WorkDoneService {
     WorkDoneDAO workDoneDao=new WorkDoneDAO();
@@ -15,7 +15,8 @@ public class WorkDoneService {
     }
 
 
-    public List<EmpProj> projetsWithProfits() {
+    public List<EmpProj> projetsWithProfits() throws SQLException {
+
         return  workDoneDao.projectsWithProfits();
     }
 }

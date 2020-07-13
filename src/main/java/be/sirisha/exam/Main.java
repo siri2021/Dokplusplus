@@ -14,10 +14,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
 
-
-
-
-public class Main {
+public class
+        Main {
 
     public static void main(String[] args) throws SQLException {
         int mainChoice;
@@ -178,8 +176,11 @@ public class Main {
                 if(subChoice==5){
                    //list of all projects with profitability
                    List<EmpProj> projectsWithProfits=workDoneService.projetsWithProfits();
+                    //beers.forEach(b -> System.out.println(b.getSingleLine()));
+                    projectsWithProfits.forEach(p-> System.out.println(p.projProfit()));
                 }
-                if (subChoice == 5) {
+                if (subChoice == 6
+                ) {
                     //list of top 3 employees per project
 
                 }
