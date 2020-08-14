@@ -7,6 +7,7 @@ public class WorkDone {
     private int ProjectId;
     private LocalDate Date;
     private float HoursWorked;
+    private String Description;
 
     public int getEmpId() {
         return EmpId;
@@ -48,5 +49,19 @@ public class WorkDone {
         Description = description;
     }
 
-    private String Description;
+
+
+    public void setDate(String next) {
+    }
+
+    @Override
+    public String toString() {
+        return "WorkDone{" +
+                "EmpId=" + EmpId +
+                ", ProjectId=" + ProjectId +
+                ", Date=" + Date +
+                ", HoursWorked=" + HoursWorked +
+                ", Description='" + Description + '\'' +
+                '}';
+    }
 }

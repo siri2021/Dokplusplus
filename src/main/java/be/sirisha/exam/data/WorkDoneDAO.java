@@ -3,14 +3,36 @@ package be.sirisha.exam.data;
 import be.sirisha.exam.model.EmpProj;
 import be.sirisha.exam.model.Employee;
 import be.sirisha.exam.model.Project;
+import be.sirisha.exam.model.WorkDone;
 
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static be.sirisha.exam.validations.Validator.validateWorkDone;
+
 public class WorkDoneDAO {
+
+    public List<WorkDone> workDoneList() throws SQLException {
+        Connection conn = ConnectionFactory.getConnection();
+        String sql="SELECT * from WorkDone ";
+        PreparedStatement ps=conn.prepareStatement(sql);
+        ResultSet rs=ps.executeQuery();
+        List<WorkDone> workDoneList=new ArrayList<>();
+        while(rs.next()) {
+            WorkDone  workDone =new WorkDone();
+            workDone.setEmpId(rs.getInt(1));
+            workDone.setProjectId(rs.getInt(2));
+            workDone.setDate(rs.getDate(3).toLocalDate());
+            workDone.setHoursWorked(rs.getInt(4));
+            workDone.setDescription(rs.getString(5));
+            workDoneList.add(workDone);
+        }
+        return workDoneList;
+    }
 
     public List<EmpProj> emp_proj() throws SQLException {
         try {
@@ -120,7 +142,88 @@ public class WorkDoneDAO {
             return  projExpenditure;
         }
 
+    public void addEmpProject(WorkDone workDone) throws SQLException {
+
+        if(validateWorkDone(workDone)) {
+            Connection conn = ConnectionFactory.getConnection();
+            String sql = "INSERT INTO WorkDone VALUES(?,?,?,?,?)";
+
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, workDone.getEmpId());
+            ps.setInt(2, workDone.getProjectId());
+            ps.setDate(3, Date.valueOf(workDone.getDate()));
+            ps.setFloat(4, workDone.getHoursWorked());
+            ps.setString(5, workDone.getDescription());
+            System.out.println("added");
+            ps.executeUpdate();
+        }else{
+            System.out.println("not valid");
+        }
+    }
+
+    public void updateEmpProject(WorkDone workDone) throws SQLException{
+        Connection conn = ConnectionFactory.getConnection();
+        String sql="UPDATE WorkDone SET HoursWorked=? where EmpId =?";
+
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setFloat(1,workDone.getHoursWorked());
+        ps.setInt(2,workDone.getEmpId());
+        int rowsUpdated=ps.executeUpdate();
+        System.out.println("rowsUpdated");
+    }
+
+    public void delete(WorkDone workDone) throws SQLException {
+        Connection conn = ConnectionFactory.getConnection();
+        String sql="DELETE from WorkDone where EmpId =?  ;";
+        System.out.println(sql);
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setInt(1,workDone.getEmpId());
+        int rowCount= ps.executeUpdate();
+        System.out.println(rowCount+"rows deleted");
+
+
+    }
+
+    public List<EmpProj> showEmployeesInAProject(int projectId) throws SQLException {
+        Connection conn = ConnectionFactory.getConnection();
+        String sql="SELECT  EmpId,ProjectId , HoursWorked from WorkDone where ProjectId=? ORDER BY  HoursWorked desc";
+        PreparedStatement ps=conn.prepareStatement(sql);
+        ps.setInt(1,projectId);
+        ResultSet rs=ps.executeQuery();
+        List<EmpProj> empProjects=new ArrayList<>();
+        while(rs.next()) {
+            EmpProj  empProject =new EmpProj();
+            empProject.setEmpId(rs.getInt(1));
+            empProject.setProjId(rs.getInt(2));
+
+            empProject.setHoursWorked(rs.getInt(3));
+
+            empProjects.add(empProject);
+        }
+        return empProjects;
+    }
+    public List<EmpProj> showEmployeesInAProject(int projectId,int empId) throws SQLException {
+        Connection conn = ConnectionFactory.getConnection();
+        String sql="SELECT  EmpId,ProjectId , HoursWorked from WorkDone where ProjectId=? , EmpId=?  ORDER BY  HoursWorked desc";
+        PreparedStatement ps=conn.prepareStatement(sql);
+        ps.setInt(1,projectId);
+        ps.setInt(2,empId);
+        ResultSet rs=ps.executeQuery();
+        List<EmpProj> empProjects=new ArrayList<>();
+        while(rs.next()) {
+            EmpProj  empProject =new EmpProj();
+            empProject.setEmpId(rs.getInt(1));
+            empProject.setProjId(rs.getInt(2));
+
+            empProject.setHoursWorked(rs.getInt(3));
+
+            empProjects.add(empProject);
+        }
+        return empProjects;
+    }
+
+
+
+
 
 }
-
-///follow the order methods are called and then solve

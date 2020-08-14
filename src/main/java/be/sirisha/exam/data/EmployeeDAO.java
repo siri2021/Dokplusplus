@@ -8,10 +8,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
+
+import static be.sirisha.exam.validations.Validator.validateEmployee;
 import static java.time.LocalDate.now;
 
 
 public class EmployeeDAO {
+
     public List<Employee> getAllEmployees() throws SQLException {
         //1.create connection
         Connection con = ConnectionFactory.getConnection();
@@ -41,57 +44,61 @@ public class EmployeeDAO {
         }
 
     public void addEmployee(Employee emp)  {
+       if( validateEmployee(emp)) {
+           try {
 
-                try {
+               Connection conn = ConnectionFactory.getConnection();
 
-                    Connection conn = ConnectionFactory.getConnection();
+               String sql = "INSERT INTO Employee VALUES(?,?,?,?,?,?,?)";
 
-                    String sql="INSERT INTO Employee VALUES(?,?,?,?,?,?,?)";
-                    System.out.println(sql);
-                    try {
-                        PreparedStatement ps = conn.prepareStatement(sql);
-                        System.out.println("im in try " + sql);
-                        //if(validateEmployee(emp)) {
-                        ps.setInt(1, emp.getEmployeeId());
+               try {
+                   PreparedStatement ps = conn.prepareStatement(sql);
 
-                        ps.setString(2, emp.getFirstName());
+                   ps.setInt(1, emp.getEmployeeId());
 
-                        ps.setString(3, emp.getLastName());
+                   ps.setString(2, emp.getFirstName());
 
-                        ps.setString(4, emp.getPhoneNumber());
+                   ps.setString(3, emp.getLastName());
 
-                        ps.setString(5, emp.getPhoneNumberIce());
+                   ps.setString(4, emp.getPhoneNumber());
 
-                        ps.setDate(6, Date.valueOf(emp.getDateOfBirth()));
+                   ps.setString(5, emp.getPhoneNumberIce());
 
-                        ps.setFloat(7, emp.getSalary());
+                   ps.setDate(6, Date.valueOf(emp.getDateOfBirth()));
 
-                        ps.executeUpdate();
+                   ps.setFloat(7, emp.getSalary());
 
-                        //}
-                    }
-                    catch (SQLException e) {
-                    e.printStackTrace();
-                     }
+                   ps.executeUpdate();
 
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+                   //}
+               } catch (SQLException e) {
+                   e.printStackTrace();
+               }
+
+           } catch (SQLException e) {
+               e.printStackTrace();
+           }
+           System.out.println("successfully inserted");
+       }
+       else{
+           System.out.println("sorry invalid data");
+       }
     }
 
 
 
 
-public List<Employee> employeeByName(String firstName, String lastName) {
+public List<Employee> employeeByFirstName(String firstName) {
         try {
         Connection conn=ConnectionFactory.getConnection();
-        String sql="SELECT * FROM Employee WHERE FirstName LIKE ? OR LastName LIKE ? ;" ;
+        String sql="SELECT * FROM Employee WHERE FirstName LIKE ? ;" ;
 
         PreparedStatement ps = conn.prepareStatement(sql);
 
         ps.setString(1,firstName);
-        ps.setString(2,lastName);
+
         ResultSet rs=ps.executeQuery();
+
         return parsedResultSet(rs);
 
         } catch (SQLException e) {
@@ -100,19 +107,38 @@ public List<Employee> employeeByName(String firstName, String lastName) {
         }
         }
 
+    public List<Employee> employeeByLastName(String lastName) {
+        try {
+            Connection conn=ConnectionFactory.getConnection();
+            String sql="SELECT * FROM Employee WHERE LastName LIKE ? ;" ;
+
+            PreparedStatement ps = conn.prepareStatement(sql);
+
+            ps.setString(1,lastName);
+            ResultSet rs=ps.executeQuery();
+
+            return parsedResultSet(rs);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
+    }
+
+
 
     public void updateSalary(int empId, float salary) {
-        System.out.println("im in update");
+
         try {
             Connection con = ConnectionFactory.getConnection();
             String sql="UPDATE Employee SET Salary = ? where EmpId = ? ;" ;
-            System.out.println(sql);
+
         PreparedStatement ps=con.prepareStatement(sql);
-            System.out.println(sql);
+
         ps.setFloat(1, salary);
-            System.out.println(sql);
+
         ps.setInt(2,empId);
-            System.out.println(sql);
+
         ps.executeUpdate();
             System.out.println("update done");
         } catch (SQLException e) {
@@ -131,13 +157,20 @@ public List<Employee> employeeByName(String firstName, String lastName) {
         ps.setInt(1, now().getMonthValue());
             ps.setInt(2,now().getDayOfMonth());
         ResultSet rs=ps.executeQuery();
+
         return parsedResultSet(rs);
         } catch (SQLException e) {
             e.printStackTrace();
             return Collections.emptyList();
         }
     }
-
+    public void greet(List<Employee> employees){
+            int people=employees.size();
+            while(people>0){
+                System.out.println( " HELLO MR/MRS:"+employees.get(0).getFirstName() + employees.get(0).getLastName() + "MANY HAPPY RETURNS OF THE DAY");
+                people--;
+            }
+    }
     public List<Employee> getBirthdayBuddiesupcoming7Days() {
         try {
             Connection conn = ConnectionFactory.getConnection();
@@ -150,6 +183,22 @@ public List<Employee> employeeByName(String firstName, String lastName) {
         } catch (SQLException e) {
             e.printStackTrace();
             return Collections.emptyList();
+        }
+
+    }
+
+    public void deleteEmp(int empIdToDelete) throws SQLException {
+
+        try {
+            Connection conn = ConnectionFactory.getConnection();
+            String sql = "DELETE FROM Employee WHERE EmpId= ? ;";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, empIdToDelete);
+            int numOfRowsDeleted = ps.executeUpdate();
+            System.out.println(numOfRowsDeleted + "rows deleted");
+        }catch(SQLException e){
+            e.printStackTrace();
+
         }
 
     }

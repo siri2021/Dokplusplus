@@ -12,14 +12,19 @@ public class EmployeeService {
         return employeeDAO.getAllEmployees();
     }
     public void addEmployee(Employee emp){
+
         employeeDAO.addEmployee(emp);
     }
 
 
 
 
-    public List<Employee> employeeByName(String firstName,String lastName) {
-        return employeeDAO.employeeByName(firstName,lastName);
+    public List<Employee> employeeByFirstName(String firstName) {
+        return employeeDAO.employeeByFirstName(firstName);
+            }
+
+    public List<Employee> employeeByLastName(String lastName) {
+        return employeeDAO.employeeByLastName(lastName);
     }
 
     public void updateSalary(int empId, float salary) {
@@ -29,8 +34,15 @@ public class EmployeeService {
     public List<Employee> getBirthday() {
        return employeeDAO.getBirthday();
     }
+    public void greet(List<Employee> employees){
+        employeeDAO.greet(employees);
+    }
 
     public List<Employee> getBirthdayBuddiesupcoming7Days() {
         return employeeDAO.getBirthdayBuddiesupcoming7Days();
+    }
+
+    public void deleteEmployee(int empIdToDelete) throws SQLException {
+        employeeDAO.deleteEmp(empIdToDelete);
     }
 }

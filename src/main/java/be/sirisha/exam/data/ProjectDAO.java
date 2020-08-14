@@ -10,6 +10,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import static be.sirisha.exam.validations.Validator.validateProject;
+
 public class ProjectDAO {
     public List<Project> getAllProjects() {
 
@@ -49,19 +51,22 @@ public class ProjectDAO {
     }
 
     public void addProject(Project project) throws SQLException {
-        Connection conn = ConnectionFactory.getConnection();
+        if(validateProject(project)) {
+            Connection conn = ConnectionFactory.getConnection();
 
-        String sql="INSERT INTO ProjectData VALUES(?,?,?,?,?)";
-        System.out.println(sql);
-        PreparedStatement ps = conn.prepareStatement(sql);
-        ps.setInt(1,project.getProjectId());
-        ps.setDate(2,Date.valueOf(project.getStartDate()));
-        ps.setString(3,project.getDescription());
-        ps.setFloat(4, (float) project.getPrice());
-        ps.setDate(5,Date.valueOf(project.getExpectedEndDate()));
+            String sql = "INSERT INTO ProjectData VALUES(?,?,?,?,?)";
 
-        System.out.println("added");
-        ps.executeUpdate();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, project.getProjectId());
+            ps.setDate(2, Date.valueOf(project.getStartDate()));
+            ps.setString(3, project.getDescription());
+            ps.setFloat(4, (float) project.getPrice());
+            ps.setDate(5, Date.valueOf(project.getExpectedEndDate()));
+
+            System.out.println("inserted");
+            ps.executeUpdate();
+        }else
+            System.out.println("invalid data");
     }
 
     public List<Project> showProjectsStartingToday() {
